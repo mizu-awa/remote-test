@@ -18,18 +18,18 @@
   </header>
 
   <main>
-    <section aria-labelledby="todo-heading">
-      <h2 id="todo-heading" class="section-title">未実施 <span id="todo-count" class="count"></span></h2>
-      <ol id="todo-list" class="task-list"></ol>
-      <p id="todo-empty" class="empty" hidden>タスクはありません</p>
-    </section>
-
     <section aria-labelledby="done-heading">
       <button id="done-toggle" class="section-title section-toggle" aria-expanded="false" aria-controls="done-list">
         <span id="done-heading">完了</span> <span id="done-count" class="count"></span>
         <span class="chevron" aria-hidden="true"></span>
       </button>
       <ul id="done-list" class="task-list" hidden></ul>
+    </section>
+
+    <section aria-labelledby="todo-heading">
+      <h2 id="todo-heading" class="section-title">未実施 <span id="todo-count" class="count"></span></h2>
+      <ol id="todo-list" class="task-list"></ol>
+      <p id="todo-empty" class="empty" hidden>タスクはありません</p>
     </section>
   </main>
 
@@ -38,10 +38,10 @@
     <button type="submit" class="add-btn" aria-label="追加">＋</button>
   </form>
 
-  <dialog id="edit-dialog" class="sheet">
-    <form method="dialog" id="edit-form">
+  <div id="edit-dialog" class="inline-editor" hidden>
+    <form id="edit-form">
       <label for="edit-input" class="sheet-label">タスクを編集</label>
-      <textarea id="edit-input" rows="3" maxlength="200"></textarea>
+      <textarea id="edit-input" rows="2" maxlength="200"></textarea>
       <div class="sheet-actions">
         <button type="button" id="edit-delete" class="danger">削除</button>
         <span class="spacer"></span>
@@ -49,7 +49,7 @@
         <button value="save" class="primary">保存</button>
       </div>
     </form>
-  </dialog>
+  </div>
 
   <dialog id="menu-dialog" class="sheet">
     <div class="menu">
@@ -65,3 +65,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+
