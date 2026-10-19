@@ -1,5 +1,5 @@
 // オフラインでも開けるよう、アプリ本体をキャッシュする（stale-while-revalidate）
-const CACHE = 'backlog-v1';
+const CACHE = 'backlog-v2';
 const ASSETS = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest', 'icon.svg'];
 
 self.addEventListener('install', (e) => {
@@ -26,3 +26,4 @@ self.addEventListener('fetch', (e) => {
     })
   );
 });
+

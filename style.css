@@ -61,7 +61,7 @@ button { font: inherit; color: inherit; }
 main {
   max-width: 640px;
   margin: 0 auto;
-  padding: 0 16px calc(96px + env(safe-area-inset-bottom));
+  padding: 0 16px calc(96px + env(safe-area-inset-bottom) + var(--keyboard-offset, 0px));
 }
 
 .section-title {
@@ -190,7 +190,7 @@ main {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: var(--keyboard-offset, 0px);
   display: flex;
   gap: 8px;
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
@@ -255,3 +255,33 @@ main {
 .menu { display: flex; flex-direction: column; gap: 8px; }
 .menu button { width: 100%; text-align: left; }
 .note { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+
+/* hidden を display:flex などで上書きしない。 */
+[hidden] { display: none !important; }
+html { scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom) + var(--keyboard-offset, 0px)); }
+.task.is-editing { flex-wrap: wrap; }
+.task.is-editing > .title,
+.task.is-editing > .handle { display: none; }
+.inline-editor { flex: 1; min-width: 0; padding: 12px; }
+.inline-editor .sheet-label { font-size: 14px; }
+.inline-editor textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+.inline-editor .sheet-actions { flex-wrap: wrap; gap: 6px; }
+.inline-editor button {
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.inline-editor .primary { background: var(--accent); color: #fff; }
+.inline-editor .danger { color: var(--danger); }
