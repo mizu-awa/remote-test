@@ -45,6 +45,7 @@ function findTask(id) {
 /* ---------- 描画 ---------- */
 
 function render() {
+  if (editingId) closeEdit();
   const todos = tasks.filter((t) => t.status === STATUS.TODO);
   const dones = tasks
     .filter((t) => t.status === STATUS.DONE)
@@ -268,16 +269,33 @@ let editingId = null;
 function openEdit(id) {
   const t = findTask(id);
   if (!t) return;
+  if (editingId) closeEdit();
   editingId = id;
   editInput.value = t.title;
-  editDialog.showModal();
+  const row = [...todoList.children, ...doneList.children].find((el) => el.dataset.id === id);
+  row.classList.add('is-editing');
+  row.append(editDialog);
+  editDialog.hidden = false;
+  editInput.focus({ preventScroll: true });
+  requestAnimationFrame(() => editDialog.scrollIntoView({ block: 'nearest' }));
+}
+
+function closeEdit() {
+  const row = editDialog.closest('.task');
+  editDialog.hidden = true;
+  document.body.append(editDialog);
+  row?.classList.remove('is-editing');
+  editingId = null;
+  row?.querySelector('.title').focus({ preventScroll: true });
 }
 
 $('edit-form').addEventListener('submit', (e) => {
+  e.preventDefault();
   if (e.submitter?.value !== 'save') return;
   const t = findTask(editingId);
   const title = editInput.value.trim();
   if (t && title) {
+    closeEdit();
     t.title = title;
     save();
     render();
@@ -289,11 +307,15 @@ editInput.addEventListener('keydown', (e) => {
     $('edit-form').requestSubmit(editDialog.querySelector('.primary'));
   }
 });
-$('edit-cancel').addEventListener('click', () => editDialog.close());
+$('edit-cancel').addEventListener('click', closeEdit);
+editInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { e.preventDefault(); closeEdit(); }
+});
 $('edit-delete').addEventListener('click', () => {
   if (!confirm('このタスクを削除しますか？')) return;
-  deleteTask(editingId);
-  editDialog.close();
+  const id = editingId;
+  closeEdit();
+  deleteTask(id);
 });
 
 /* ---------- メニュー ---------- */
@@ -303,7 +325,7 @@ $('menu-btn').addEventListener('click', () => menuDialog.showModal());
 $('menu-close').addEventListener('click', () => menuDialog.close());
 
 // シート外（背景）タップで閉じる
-for (const d of [editDialog, menuDialog]) {
+for (const d of [menuDialog]) {
   d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
 }
 
@@ -349,8 +371,23 @@ window.addEventListener('storage', (e) => {
   if (e.key === STORAGE_KEY && !drag) { tasks = load(); render(); }
 });
 
+// iOS のキーボードは layout viewport を縮めないため、見えている領域に合わせる。
+function syncViewport() {
+  const viewport = window.visualViewport;
+  const bottom = viewport && viewport.scale === 1
+    ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop) : 0;
+  document.documentElement.style.setProperty('--keyboard-offset', `${bottom}px`);
+  if (document.activeElement === editInput) {
+    editDialog.scrollIntoView({ block: 'nearest' });
+  }
+}
+window.visualViewport?.addEventListener('resize', syncViewport);
+window.visualViewport?.addEventListener('scroll', syncViewport);
+window.addEventListener('resize', syncViewport);
+syncViewport();
 render();
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
+
