@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16181c" media="(prefers-color-scheme: dark)">
+  <title>Backlog</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>Backlog</h1>
+    <button id="menu-btn" class="icon-btn" aria-label="メニュー">⋯</button>
+  </header>
+
+  <main>
+    <section aria-labelledby="todo-heading">
+      <h2 id="todo-heading" class="section-title">未実施 <span id="todo-count" class="count"></span></h2>
+      <ol id="todo-list" class="task-list"></ol>
+      <p id="todo-empty" class="empty" hidden>タスクはありません</p>
+    </section>
+
+    <section aria-labelledby="done-heading">
+      <button id="done-toggle" class="section-title section-toggle" aria-expanded="false" aria-controls="done-list">
+        <span id="done-heading">完了</span> <span id="done-count" class="count"></span>
+        <span class="chevron" aria-hidden="true"></span>
+      </button>
+      <ul id="done-list" class="task-list" hidden></ul>
+    </section>
+  </main>
+
+  <form id="add-form" class="add-bar" autocomplete="off">
+    <input id="add-input" type="text" placeholder="タスクを追加" enterkeyhint="done" maxlength="200" aria-label="新しいタスク">
+    <button type="submit" class="add-btn" aria-label="追加">＋</button>
+  </form>
+
+  <dialog id="edit-dialog" class="sheet">
+    <form method="dialog" id="edit-form">
+      <label for="edit-input" class="sheet-label">タスクを編集</label>
+      <textarea id="edit-input" rows="3" maxlength="200"></textarea>
+      <div class="sheet-actions">
+        <button type="button" id="edit-delete" class="danger">削除</button>
+        <span class="spacer"></span>
+        <button value="cancel" type="button" id="edit-cancel">キャンセル</button>
+        <button value="save" class="primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="menu-dialog" class="sheet">
+    <div class="menu">
+      <button type="button" id="clear-done">完了済みをすべて削除</button>
+      <button type="button" id="export-btn">エクスポート（JSON）</button>
+      <button type="button" id="import-btn">インポート（JSON）</button>
+      <input type="file" id="import-file" accept="application/json,.json" hidden>
+      <button type="button" id="menu-close">閉じる</button>
+      <p class="note">データはこの端末のブラウザ内（localStorage）にのみ保存されます。</p>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
